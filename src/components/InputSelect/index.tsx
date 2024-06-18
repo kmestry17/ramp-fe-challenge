@@ -1,5 +1,6 @@
 import Downshift from "downshift"
-import { useCallback, useState } from "react"
+// Bug 1: Adding imports change
+import { useCallback, useState, useEffect, useRef } from "react"
 import classNames from "classnames"
 import { DropdownPosition, GetDropdownPositionFn, InputSelectOnChange, InputSelectProps } from "./types"
 
@@ -17,6 +18,9 @@ export function InputSelect<TItem>({
     top: 0,
     left: 0,
   })
+  // Bug 1: Adding constants to fixed the dropdown position change starts
+  const dropdownRef = useRef<HTMLDivElement>(null)
+  const selectRef = useRef<HTMLDivElement>(null)
 
   const onChange = useCallback<InputSelectOnChange<TItem>>(
     (selectedItem) => {
@@ -29,6 +33,30 @@ export function InputSelect<TItem>({
     },
     [consumerOnChange]
   )
+  // Bug 1: Adding constants to fixed the dropdown position change starts
+
+  // Bug 1: Adding useEffect to fix the dropdown position change starts
+  useEffect(() => {
+    function handleScroll() {
+      if (dropdownRef.current && selectRef.current) {
+        const selectRect = selectRef.current.getBoundingClientRect()
+        const scrollTop = window.scrollY || document.documentElement.scrollTop
+        const scrollLeft = window.scrollX || document.documentElement.scrollLeft
+        setDropdownPosition({
+          top: selectRect.bottom + scrollTop,
+          left: selectRect.left + scrollLeft,
+        })
+      }
+    }
+
+    document.addEventListener("scroll", handleScroll, true)
+    window.addEventListener("resize", handleScroll)
+    return () => {
+      document.removeEventListener("scroll", handleScroll, true)
+      window.removeEventListener("resize", handleScroll)
+    }
+  }, [])
+  // Bug 1: Adding useEffect to fix the dropdown position change ends
 
   return (
     <Downshift<TItem>
@@ -51,7 +79,8 @@ export function InputSelect<TItem>({
         const parsedSelectedItem = selectedItem === null ? null : parseItem(selectedItem)
 
         return (
-          <div className="RampInputSelect--root">
+          // Bug 1: Adding className to fix the dropdown position change
+          <div className="RampInputSelect--root" ref={selectRef}>
             <label className="RampText--s RampText--hushed" {...getLabelProps()}>
               {label}
             </label>
@@ -72,6 +101,9 @@ export function InputSelect<TItem>({
               })}
               {...getMenuProps()}
               style={{ top: dropdownPosition.top, left: dropdownPosition.left }}
+              // Bug 1: Adding ref to fix the dropdown position change starts
+              ref={dropdownRef}
+              // Bug 1: Adding ref to fix the dropdown position change ends
             >
               {renderItems()}
             </div>
@@ -119,11 +151,14 @@ export function InputSelect<TItem>({
 
 const getDropdownPosition: GetDropdownPositionFn = (target) => {
   if (target instanceof Element) {
-    const { top, left } = target.getBoundingClientRect()
-    const { scrollY } = window
+    // Bug 1: Adding const to fix the dropdown position change
+    const { top, left, height } = target.getBoundingClientRect()
+    // Bug 1: Adding const to fix the dropdown position change
+    const { scrollY, scrollX } = window
     return {
-      top: scrollY + top + 63,
-      left,
+      // Bug 1: Adding const to fix the dropdown position change
+      top: scrollY + top + height,
+      left: scrollX + left,
     }
   }
 
