@@ -33,7 +33,6 @@ export function InputSelect<TItem>({
     },
     [consumerOnChange]
   )
-  // Bug 1: Adding constants to fixed the dropdown position change starts
 
   // Bug 1: Adding useEffect to fix the dropdown position change starts
   useEffect(() => {
@@ -80,7 +79,7 @@ export function InputSelect<TItem>({
 
         return (
           // Bug 1: Adding className to fix the dropdown position change
-          <div className="RampInputSelect--root" ref={selectRef}>
+          <div className="RampInputSelect--root">
             <label className="RampText--s RampText--hushed" {...getLabelProps()}>
               {label}
             </label>
@@ -101,9 +100,6 @@ export function InputSelect<TItem>({
               })}
               {...getMenuProps()}
               style={{ top: dropdownPosition.top, left: dropdownPosition.left }}
-              // Bug 1: Adding ref to fix the dropdown position change starts
-              ref={dropdownRef}
-              // Bug 1: Adding ref to fix the dropdown position change ends
             >
               {renderItems()}
             </div>
