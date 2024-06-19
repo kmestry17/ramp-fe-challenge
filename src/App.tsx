@@ -26,7 +26,7 @@ export function App() {
     await employeeUtils.fetchAll()
     setIsLoading(false)
 
-    // Bug 3: Changed its position after setIsLoading(false)
+    // Bug 3, 4, 6: Changed its position after setIsLoading(false)
     await paginatedTransactionsUtils.fetchAll()
   }, [employeeUtils, paginatedTransactionsUtils, transactionsByEmployeeUtils])
 
@@ -66,7 +66,7 @@ export function App() {
               return
             }
 
-            // Bug 3: Added tfix the All Employees selection bug
+            // Bug 3, 5, 7: Added a fix for the All Employees selection bug
             newValue.id !== ""
               ? await loadTransactionsByEmployee(newValue.id)
               : await loadAllTransactions()
@@ -81,7 +81,7 @@ export function App() {
           {transactions !== null && (
             <button
               className="RampButton"
-              // Bug 3: Added temporarily to fix the All Employee bug
+              // Bug 3, 5: Added temporarily to fix the All Employee bug
               disabled={
                 paginatedTransactionsUtils.loading || paginatedTransactions?.nextPage == null
                   ? true

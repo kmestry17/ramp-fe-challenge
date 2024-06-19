@@ -134,7 +134,7 @@ hr.RampBreak--l {
   padding: 0.125rem;
   width: 1.25rem;
   height: 1.25rem;
-  cursor: pointer;
+  /* Bug 2: Removed cursor: pointer; as it confuses input */
 }
 
 .RampInputCheckbox--label-disabled {
@@ -150,7 +150,10 @@ hr.RampBreak--l {
 }
 
 .RampInputCheckbox--input {
-  display: none;
+  /* Bug 2: Checkbox not working */
+  display: inline;
+  opacity: 0;
+  transform: translate(-16px);
 }
 
 .RampButton {
